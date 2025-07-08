@@ -8,8 +8,9 @@ if __name__ == "__main__":
     server_thread.daemon = True
     server_thread.start()
     
-    window_size = Size(800, 600, SizeHint.NONE)
+    window_size = Size(400, 800, SizeHint.NONE)
     webview = Webview(size=window_size)
+    webview.title = "OpenTab"
     webview.navigate("http://localhost:60002")
     webview.run()
      

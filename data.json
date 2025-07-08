@@ -1,0 +1,16 @@
+{
+    "tree": [
+        {
+            "id": 0,
+            "name": "Thingy",
+            "type": "Folder",
+            "parent": "."
+        },
+        {
+            "id": 1,
+            "name": "something",
+            "type": "tab",
+            "parent": 0
+        }
+    ]
+}
