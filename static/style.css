@@ -4,21 +4,11 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
-.tree-element {
-    display: flex;
-    align-items: center;
-}
-
-.element-name {
-    font-size: small;
-    font-weight: 200;
-    margin: 0.25rem;
-}
-
 .icon {
     width: 16px;
 }
 
-.clickable {
+.tree-element {
+    display: flex;
     cursor: pointer;
 }
