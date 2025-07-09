@@ -22,21 +22,25 @@ def homepage():
 def get_extension():
     return "Hello from OpenTab"
 
-@app.get("/tab-data")
-def get_tab_data():
-    id_param = request.args.get("id")
-
+@app.get('/get-root-data')
+def get_data():
     with open("data.json", "r") as file:
         data = json.load(file)
-        if id_param is None:
-            root_items = [v for v in data["tree"] if v["parent"] == "."]
-            template = env.get_template("tab_data.html")
-            return template.render({"tree": root_items})
-        else:
-            nested_items = [v for v in data["tree"] if v["parent"] == int(id_param)]
-            template = env.get_template("tab_data.html")
-            return template.render({"tree": nested_items})   
-            
+        root_data = [v for v in data["tree"] if v["parent"] == "."]
+        template = env.get_template("data.html")
+        file.close()
+        return template.render({"tree": root_data})
+    
+@app.get('/get-elements')
+def get_elements():
+    id_param = request.args.get("id")
+    with open("data.json", "r") as file:
+        data = json.load(file)
+        element_data = [v for v in data["tree"] if v["parent"] == int(id_param)]
+        template = env.get_template("data.html")
+        file.close()
+        return template.render({"tree": element_data})
+
 def run_server():
     app.run("0.0.0.0", 60002)
 

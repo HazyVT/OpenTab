@@ -6,9 +6,20 @@ body {
 
 .icon {
     width: 16px;
+    rotate: 90deg;
 }
 
-.tree-element {
+ul {
+    list-style: none;
+    padding-inline-start: 1rem;
+}
+
+.folder-element {
     display: flex;
-    cursor: pointer;
+}
+
+#items {
+    border-left: 2px dashed #737994;
+    margin: 2px;
+    margin-left: 4px;
 }

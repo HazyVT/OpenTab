@@ -9,7 +9,7 @@
         {
             "id": 1,
             "name": "something",
-            "type": "tab",
+            "type": "Tab",
             "parent": 0
         },
         {
@@ -17,6 +17,18 @@
             "name": "Folder Thing",
             "type": "Folder",
             "parent": "."
+        },
+        {
+            "id": 3,
+            "name": "Folder Thing",
+            "type": "Folder",
+            "parent": 0
+        },
+        {
+            "id": 4,
+            "name": "something",
+            "type": "Tab",
+            "parent": 3
         }
     ]
 }
