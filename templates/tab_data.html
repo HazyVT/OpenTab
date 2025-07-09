@@ -1,6 +1,9 @@
 {% for element in tree %}
-<div>
-    <h4>{{element.name}}</h4>
-    <h4>{{element.type}}</h4>
-</div>
+<li class="tree-element clickable">
+    {% if element.type == "Folder" %}
+        <img class="icon" src="/static/folder.svg" />
+    {% endif %}
+    <h4 class="element-name">{{element.name}}</h4>
+    <ul id="#elements"></ul>
+</li>
 {% endfor %}
