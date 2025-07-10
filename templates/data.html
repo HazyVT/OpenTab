@@ -1,10 +1,10 @@
-{% for element in tree %}
-    {% if element.type == "Folder" %}
-    <li>{{element.name}}</li>
-    <ul id="items" hx-get="/get-elements?id={{element.id}}" hx-swap="innerHTML" hx-trigger="load">
+{% for child in children %}
+    <li>{{child.name}}</li>
+    {% if child.children|length > 0 %}
+    <ul id="items">
+        {% with children=child.children %}
+            {% include 'data.html' %}
+        {% endwith %}
     </ul>
-    {% endif %}
-    {% if element.type == "Tab" %}
-    <li>{{element.name}}</li>
     {% endif %}
 {% endfor %}
