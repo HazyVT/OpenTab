@@ -1,6 +1,7 @@
 import json
 import os
 import traceback
+import sqlite3
 
 from models.folder import Folder
 from models.tab import Tab
@@ -11,6 +12,9 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__, static_url_path="/static")
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
+
+
+
 
 @app.route("/")
 def homepage():
