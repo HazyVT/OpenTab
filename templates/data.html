@@ -1,5 +1,10 @@
 {% for child in children %}
-    <li>{{child.name}}</li>
+    {% if child.type == "folder" %}
+        <li><img class="icon" src="/static/caret.svg" /><b>{{child.name}}</b></li>
+    {% else %}
+        <li>{{child.name}}</li>
+    {% endif %}
+    
     {% if child.children|length > 0 %}
     <ul id="items">
         {% with children=child.children %}

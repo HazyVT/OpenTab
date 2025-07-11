@@ -2,6 +2,7 @@ body {
     background-color: #222222;
     color: #ffffffde;
     font-family: "Roboto", sans-serif;
+    user-select: none;
 }
 
 .icon {
@@ -19,7 +20,7 @@ ul {
 }
 
 #items {
-    border-left: 2px dashed #737994;
+    border-left: 2px dashed #6A6A6A;
     margin: 2px;
     margin-left: 4px;
 }
