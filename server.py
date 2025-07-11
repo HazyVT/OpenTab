@@ -5,7 +5,7 @@ import traceback
 from models.folder import Folder
 from models.tab import Tab
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__, static_url_path="/static")
@@ -20,6 +20,16 @@ def homepage():
 @cross_origin()
 def get_extension():
     return "Hello from OpenTab"
+
+@app.route("/new-tab", methods=["POST"])
+@cross_origin()
+def new_tab():
+    if "id" in request.json:
+        print(request.json)
+    else:
+        print("Error: No id in body of new tab request.")
+
+    return ""
 
 @app.get('/get-data')
 def get_data():
