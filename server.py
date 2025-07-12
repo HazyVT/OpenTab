@@ -1,3 +1,4 @@
+"""
 import json
 import os
 import traceback
@@ -6,15 +7,13 @@ import sqlite3
 from models.folder import Folder
 from models.tab import Tab
 
-from flask import Flask, render_template, request
-from flask_cors import CORS, cross_origin
+from werkzeug.routing import Rule
+from geventwebsocket.websocket import WebSocket
 
 app = Flask(__name__, static_url_path="/static")
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
-
-
-
+sockets = Sockets()
 
 @app.route("/")
 def homepage():
@@ -29,11 +28,27 @@ def get_extension():
 @cross_origin()
 def new_tab():
     if "id" in request.json:
-        print(request.json)
+        # Make connection to sqlite database
+        conn = sqlite3.connect("mydb.sqlite")
+        cursor = conn.cursor()
+        
+        new_tab_id = request.json["id"]
+        new_tab_title = request.json["title"]
+        new_tab_obj = Tab(new_tab_id, new_tab_title, "")
+
+        #INSERT INTO Tabs (id, title, url, icon, parent) VALUES ({}, "{}", "{}", "{}", {})
+
+        #format(new_tab_obj.id, new_tab_obj.name, new_tab_obj.link, new_tab_obj.icon, -1)
     else:
         print("Error: No id in body of new tab request.")
 
     return ""
+
+@sockets.route("/ws/data", websocket=True)
+def handle_connect(ws: WebSocket):
+    print("Client Connected")
+
+sockets.url_map.add(Rule('/ws', endpoint=handle_connect, websocket=True))
 
 @app.get('/get-data')
 def get_data():
@@ -63,6 +78,36 @@ def get_data():
     return render_template("data.html", children=page_data)
 
 def run_server():
-    app.run("0.0.0.0", 60002)
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    server = pywsgi.WSGIServer(('0.0.0.0', 60002), app, handler_class=WebSocketHandler)
+    server.start()
+"""
+
+from fastapi import FastAPI, Request, WebSocket
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from models.websocket_manager import WebSocketManager
+import uvicorn
+
+templates = Jinja2Templates(directory="templates")
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+websocket_manager = WebSocketManager()
+
+@app.route("/")
+def homepage(request: Request):
+
+    return templates.TemplateResponse("homepage.html", {"request": request})
+
+@app.websocket("/ws")
+async def handle_websocket(websocket: WebSocket):
+    print("Client Connected")
+    await websocket_manager.connect(websocket)
+    
+
+def run_server():
 
     
+    uvicorn.run(app, host="0.0.0.0", port=60002)

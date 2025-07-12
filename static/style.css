@@ -10,9 +10,14 @@ body {
     rotate: 90deg;
 }
 
+.folder-item {
+    position: relative;
+    left: -15px;
+}
+
 ul {
     list-style: none;
-    padding-inline-start: 1rem;
+    padding-inline-start: 2rem;
 }
 
 .folder-element {

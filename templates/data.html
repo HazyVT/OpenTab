@@ -1,6 +1,6 @@
 {% for child in children %}
     {% if child.type == "folder" %}
-        <li><img class="icon" src="/static/caret.svg" /><b>{{child.name}}</b></li>
+        <li class="folder-item"><img class="icon" src="/static/caret.svg" /><b>{{child.name}}</b></li>
     {% else %}
         <li>{{child.name}}</li>
     {% endif %}
