@@ -9,5 +9,5 @@ class WebSocketManager:
         self.connection = websocket
 
     async def disconnect(self):
-        await self.connection.close()
+        self.connection = None
     
