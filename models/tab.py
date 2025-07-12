@@ -1,9 +1,10 @@
 class Tab:
-    def __init__(self, id: int, name: str, link: str):
+    def __init__(self, id: int, name: str, link: str, icon: str, parent: int):
         self.id = id
         self.name = name
         self.link = link
-        self.icon = ""
+        self.icon = icon
+        self.parent = parent
         self.type = "tab"
         
     def to_dict(self):
@@ -12,7 +13,8 @@ class Tab:
             "name": self.name,
             "type": self.type,
             "icon": self.icon,
-            "link": self.link
+            "link": self.link,
+            "parent": self.parent
         }
         
     

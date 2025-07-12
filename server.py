@@ -8,8 +8,11 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
+from models.server_models import NewTab
+
 from models.websocket_manager import WebSocketManager
 from models.data_manager import DataManager
+from models.tab import Tab
 
 templates = Jinja2Templates(directory="templates")
 app = FastAPI()
@@ -26,6 +29,7 @@ app.add_middleware(
 websocket_manager = WebSocketManager()
 data_manager = DataManager()
 
+
 @app.route("/")
 def homepage(request: Request):
     return templates.TemplateResponse("homepage.html", {"request": request})
@@ -35,8 +39,17 @@ def connect_to_extension():
     return "Hello from OpenTab"
 
 @app.post("/new-tab")
-async def new_tab():
+async def new_tab(tab: NewTab):
     # Add new tab to sqlite database
+    
+    
+    conn = sqlite3.connect("mydb.sqlite")
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO Tabs VALUES ({}, '{}', '{}', '{}', {})"
+        .format(tab.id, tab.title, "", "", -1)
+    )
+    conn.commit()
     # Rerun page data function to get updated page data from database as json
     # Send that to the websocket
     rendered_template = templates.TemplateResponse(request={"request": websocket_manager.connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
