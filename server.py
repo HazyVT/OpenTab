@@ -8,11 +8,10 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.server_models import NewTab
+from models.server_models import NewTab, UpdatedTab
 
 from models.websocket_manager import WebSocketManager
 from models.data_manager import DataManager
-from models.tab import Tab
 
 templates = Jinja2Templates(directory="templates")
 app = FastAPI()
@@ -41,17 +40,26 @@ def connect_to_extension():
 @app.post("/new-tab")
 async def new_tab(tab: NewTab):
     # Add new tab to sqlite database
-    
-    
     conn = sqlite3.connect("mydb.sqlite")
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO Tabs VALUES ({}, '{}', '{}', '{}', {})"
-        .format(tab.id, tab.title, "", "", -1)
+        .format(tab.id, tab.title, "", "/static/blank.ico", -1)
     )
     conn.commit()
     # Rerun page data function to get updated page data from database as json
     # Send that to the websocket
+    rendered_template = templates.TemplateResponse(request={"request": websocket_manager.connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
+    await websocket_manager.connection.send_text(rendered_template)
+
+@app.post("/update-tab")
+async def update_tab(tab: UpdatedTab):
+    conn = sqlite3.connect("mydb.sqlite")
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE Tabs SET title = '{}', url = '{}', icon = '{}' WHERE id = {}".format(tab.title, tab.url, tab.icon, tab.id)
+    )
+    conn.commit()
     rendered_template = templates.TemplateResponse(request={"request": websocket_manager.connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
     await websocket_manager.connection.send_text(rendered_template)
 
@@ -60,7 +68,6 @@ async def new_tab(tab: NewTab):
 def get_data(request: Request):
     page_data = data_manager.get_full_data_to_json()
     return templates.TemplateResponse(request=request, name="data.html", context={"children": page_data})
-    
 
 @app.websocket("/ws")
 async def handle_websocket(websocket: WebSocket):

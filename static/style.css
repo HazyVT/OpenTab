@@ -7,6 +7,9 @@ body {
 
 .icon {
     width: 16px;
+}
+
+.rotated {
     rotate: 90deg;
 }
 
