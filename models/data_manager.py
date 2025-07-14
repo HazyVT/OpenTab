@@ -17,9 +17,9 @@ class DataManager:
             cursor.execute("SELECT * FROM Folders WHERE parent = {}".format(folder.id))
             inner_folders = cursor.fetchall()
 
-            for folder in inner_folders:
-                item = Folder(folder[0], folder[1], folder[2])
-                elements[item.id] = item
+            for nested_folder in inner_folders:
+                item = Folder(nested_folder[0], nested_folder[1], nested_folder[2])
+                folder.add_to_children(item)
                 get_folder_data(item)
             
             cursor.execute("SELECT * FROM Tabs WHERE parent = {}".format(folder.id))

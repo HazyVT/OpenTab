@@ -2,7 +2,7 @@
     {% if child.type == "folder" %}
         <li class="folder-item"><img class="icon rotated" src="/static/caret.svg" /><b>{{child.name}}</b></li>
     {% else %}
-        <li><img class="icon" src={{child.icon}} />{{child.name}}</li>
+        <li class="folder-item"><img class="icon" src={{child.icon}} />{{child.name}}</li>
     {% endif %}
     
     {% if child.children|length > 0 %}

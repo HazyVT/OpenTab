@@ -47,8 +47,6 @@ async def new_tab(tab: NewTab):
         .format(tab.id, tab.title, "", "/static/blank.ico", -1)
     )
     conn.commit()
-    # Rerun page data function to get updated page data from database as json
-    # Send that to the websocket
     rendered_template = templates.TemplateResponse(request={"request": websocket_manager.htmx_connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
     await websocket_manager.htmx_connection.send_text(rendered_template)
 
@@ -62,7 +60,6 @@ async def update_tab(tab: UpdatedTab):
     conn.commit()
     rendered_template = templates.TemplateResponse(request={"request": websocket_manager.htmx_connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
     await websocket_manager.htmx_connection.send_text(rendered_template)
-
 
 @app.get('/get-data', response_class=HTMLResponse)
 def get_data(request: Request):
