@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS Folders (
 );
 """
 cursor.execute(tabs_create_query)
+cursor.execute(folders_create_query)
 db.commit()
 
 server_thread = threading.Thread(target=run_server)
