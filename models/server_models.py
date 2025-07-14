@@ -9,3 +9,7 @@ class UpdatedTab(BaseModel):
     title: str
     url: str
     icon: str
+    
+class MoveTab(BaseModel):
+    moveId: int
+    toId: int

@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.server_models import NewTab, UpdatedTab
+from models.server_models import NewTab, UpdatedTab, MoveTab
 
 from models.websocket_manager import WebSocketManager
 from models.data_manager import DataManager
@@ -66,21 +66,12 @@ def get_data(request: Request):
     page_data = data_manager.get_full_data_to_json()
     return templates.TemplateResponse(request=request, name="data.html", context={"children": page_data})
 
-@app.websocket("/ws-ext")
-async def handle_extension_websocket(websocket: WebSocket):
-    await websocket_manager.extension_connection(websocket)
-    print("Extension Connected")
-    
-    try:
-        while True:
-            data = await websocket_manager.extension_connection.receive_json()
-            print(data)
-    except WebSocketDisconnect:
-        await websocket_manager.disconnect_extension()
-        print("Extension Disconnected")
-
 @app.websocket("/ws")
 async def handle_websocket(websocket: WebSocket):
+    if websocket_manager.htmx_connection is not None:
+        print("Client already connected")
+        await websocket_manager.disconnect_htmx()
+        
     await websocket_manager.connect_htmx(websocket)
     print("Client Connected")
     rendered_template = templates.TemplateResponse(request={"request": websocket_manager.htmx_connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
@@ -88,11 +79,19 @@ async def handle_websocket(websocket: WebSocket):
 
     try:
         while True:
-            data = await websocket_manager.htmx_connection.receive_text()
-            print(data)
+            data = await websocket_manager.htmx_connection.receive_json()
+            match (data["type"]):
+                case "move":
+                    await data_manager.handle_move_data(data["data"]["moveId"], data["data"]["toId"])
+                    rendered_template = templates.TemplateResponse(request={"request": websocket_manager.htmx_connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
+                    await websocket_manager.htmx_connection.send_text(rendered_template)
+
     except WebSocketDisconnect:
         await websocket_manager.disconnect_htmx()
         print("Client Disconnected")
 
 def run_server():
     uvicorn.run(app, host="0.0.0.0", port=60002)
+    
+if __name__ == "__main__":
+    run_server()

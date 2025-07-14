@@ -51,3 +51,21 @@ class DataManager:
         
         page_data = [v.to_dict() for v in elements.values()]
         return page_data
+    
+    async def handle_move_data(request, move_id: int, to_id: int):
+        print(move_id, to_id)
+        conn = sqlite3.connect("mydb.sqlite")
+        cursor = conn.cursor()
+        
+        if move_id is not None:
+            # Check if its a folder
+            cursor.execute("SELECT * FROM Folders WHERE id = {}".format(move_id))
+            item = cursor.fetchone()
+            if item is not None:
+                cursor.execute("UPDATE Folders SET parent = {} WHERE id = {}".format(to_id, move_id))
+                conn.commit()
+            else:            
+                # Item is tab
+                cursor.execute("UPDATE Tabs SET parent = {} WHERE id = {}".format(to_id, move_id))
+                conn.commit()
+            

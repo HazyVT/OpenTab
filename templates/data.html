@@ -1,8 +1,8 @@
 {% for child in children %}
     {% if child.type == "folder" %}
-        <li class="folder-item"><img class="icon rotated" src="/static/caret.svg" /><b>{{child.name}}</b></li>
+        <li id="{{child.id}}" class="folder item" draggable="true" ondragstart="dragstartHandler(event)" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)" ondragleave="leavedragHandler(event)"><img id="{{child.id}}" class="icon rotated" src="/static/caret.svg" /><b id="{{child.id}}">{{child.name}}</b></li>
     {% else %}
-        <li class="folder-item"><img class="icon" src={{child.icon}} />{{child.name}}</li>
+        <li id="{{child.id}}" class="item" draggable="true" ondragstart="dragstartHandler(event)" ondragover="dragoverHandler(event)"><img id="{{child.id}}" class="icon" src={{child.icon}} />{{child.name}}</li>
     {% endif %}
     
     {% if child.children|length > 0 %}

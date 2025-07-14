@@ -3,6 +3,8 @@ body {
     color: #ffffffde;
     font-family: "Roboto", sans-serif;
     user-select: none;
+    min-width: 100vw;
+    min-height: 100vh;
 }
 
 .icon {
@@ -13,7 +15,7 @@ body {
     rotate: 90deg;
 }
 
-.folder-item {
+.item {
     position: relative;
     left: -15px;
 }

@@ -10,9 +10,50 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>Homepage</title>
 </head>
-<body hx-ws="connect:/ws">
+<body hx-ws="connect:/ws" hx-swap="none" ondragend="bodydragEndHandler(event)">
+    <div id="bruh" hx-ws="send" hx-trigger="updateTabs" hx-vals="js:{type: 'move', data: getDragData()}"></div>
     <ul id="file-tree">
-
     </ul>
 </body>
+<script>
+
+    let dragging = null;
+    let draggedTo = null;
+
+    function bodydragEndHandler(ev) {
+        ev.preventDefault();
+        if (draggedTo == null) {
+            draggedTo = -1;
+            htmx.trigger(document.getElementById("bruh"), "updateTabs")
+        }
+    }
+
+    function dragstartHandler(ev) {
+        dragging = ev.target.id;
+    } 
+
+    function dragoverHandler(ev) {
+        ev.preventDefault();
+        console.log(ev.target.id);
+    }
+
+    function leavedragHandler(ev) {
+        ev.preventDefault();
+    }
+
+    function dropHandler(ev) {
+        ev.preventDefault();
+        draggedTo = event.target.id;
+        htmx.trigger(document.getElementById("bruh"), "updateTabs")
+    }
+
+    function getDragData() {
+        const mid = dragging;
+        const did = draggedTo;
+        dragging = null;
+        draggedTo = null;
+        return {"moveId": mid, "toId": did}
+    }
+
+</script>
 </html>
