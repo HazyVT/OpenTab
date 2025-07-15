@@ -10,6 +10,5 @@ class UpdatedTab(BaseModel):
     url: str
     icon: str
     
-class MoveTab(BaseModel):
-    moveId: int
-    toId: int
+class ClosedTab(BaseModel):
+    id: int

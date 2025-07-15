@@ -26,9 +26,8 @@ class DataManager:
             inner_tabs = cursor.fetchall()
 
             for tab in inner_tabs:
-                item = Tab(tab[0], tab[1], tab[2], tab[3], tab[4])
+                item = Tab(tab[0], tab[1], tab[2], tab[3], tab[4], bool(tab[5]))
                 folder.add_to_children(item)
-
 
         conn = sqlite3.connect("mydb.sqlite")
         cursor = conn.cursor()
@@ -45,7 +44,7 @@ class DataManager:
             get_folder_data(item)
         
         for tab in root_tabs:
-            item = Tab(tab[0], tab[1], tab[2], tab[3], tab[4])
+            item = Tab(tab[0], tab[1], tab[2], tab[3], tab[4], bool(tab[5]))
             elements[item.id] = item
 
         
@@ -53,7 +52,6 @@ class DataManager:
         return page_data
     
     async def handle_move_data(request, move_id: int, to_id: int):
-        print(move_id, to_id)
         conn = sqlite3.connect("mydb.sqlite")
         cursor = conn.cursor()
         

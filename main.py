@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS Tabs (
     title TEXT,
     url TEXT,
     icon TEXT,
-    parent INTEGER
+    parent INTEGER,
+    active INTEGER
 );
 """
 folders_create_query = """

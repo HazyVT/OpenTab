@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.server_models import NewTab, UpdatedTab, MoveTab
+from models.server_models import NewTab, UpdatedTab, ClosedTab
 
 from models.websocket_manager import WebSocketManager
 from models.data_manager import DataManager
@@ -37,13 +37,29 @@ def homepage(request: Request):
 def connect_to_extension():
     return "Hello from OpenTab"
 
+@app.post("/closed-tab")
+async def closed_tab(tab: ClosedTab):
+    # Check if tab exists
+    conn = sqlite3.connect("mydb.sqlite")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Tabs WHERE id = {}".format(tab.id))
+    database_tab = cursor.fetchone()
+    if database_tab is None:
+        return "No tab has been found with this id in the database"
+    
+    # Set its active to false
+    cursor.execute("UPDATE Tabs SET active = {} WHERE id = {}".format(0, database_tab[0]))
+    conn.commit()
+    rendered_template = templates.TemplateResponse(request={"request": websocket_manager.htmx_connection}, name="list.html", context={"children": data_manager.get_full_data_to_json()}).body.decode()
+    await websocket_manager.htmx_connection.send_text(rendered_template)
+
 @app.post("/new-tab")
 async def new_tab(tab: NewTab):
     # Add new tab to sqlite database
     conn = sqlite3.connect("mydb.sqlite")
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO Tabs VALUES ({}, '{}', '{}', '{}', {})"
+        "INSERT INTO Tabs VALUES ({}, '{}', '{}', '{}', {}, 1)"
         .format(tab.id, tab.title, "", "/static/blank.ico", -1)
     )
     conn.commit()

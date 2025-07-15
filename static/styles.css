@@ -3,12 +3,19 @@ body {
     color: #ffffffde;
     font-family: "Roboto", sans-serif;
     user-select: none;
-    min-width: 100vw;
-    min-height: 100vh;
+}
+
+.active-False {
+    color: #a1a1a1;
+}
+
+.tab {
+    display: flex;
 }
 
 .icon {
     width: 16px;
+    height: 16px;
 }
 
 .rotated {
